@@ -346,21 +346,20 @@ public class FlutterBluePlugin
                 break;
             }
 
-            case "disconnect": {
-                String deviceId = (String) call.arguments;
+            case "disconnect":
+            {
+                String deviceId = (String)call.arguments;
                 BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(deviceId);
                 int state = mBluetoothManager.getConnectionState(device, BluetoothProfile.GATT);
-                BluetoothDeviceCache cache = mDevices.remove(deviceId);
-                if (cache != null) {
-                    BluetoothGatt gattServer = cache.gatt;
+                BluetoothGatt gattServer = mGattServers.remove(deviceId);
+                if(gattServer != null) {
                     gattServer.disconnect();
-                    if (state == BluetoothProfile.STATE_DISCONNECTED) {
+                    if(state == BluetoothProfile.STATE_DISCONNECTED) {
                         gattServer.close();
                     }
                 }
                 result.success(null);
                 break;
-            }
 
             case "deviceState": {
                 String deviceId = (String) call.arguments;
